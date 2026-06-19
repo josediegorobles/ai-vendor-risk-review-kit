@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://josedrobles.com/schemas/vendor-review.schema.json",
+  "title": "AI Vendor Risk Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "review",
+    "vendor",
+    "adoption_scenario",
+    "executive_summary",
+    "data_exposure_map",
+    "ai_act_role_hypothesis",
+    "security_privacy_questions",
+    "lock_in_risks",
+    "human_oversight_checklist",
+    "recommended_controls",
+    "final_recommendation",
+    "evidence_sources"
+  ],
+  "properties": {
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "version", "date", "reviewer"],
+      "properties": {
+        "id": { "type": "string", "minLength": 3 },
+        "title": { "type": "string", "minLength": 3 },
+        "version": { "type": "string", "minLength": 1 },
+        "date": { "type": "string", "format": "date" },
+        "reviewer": { "type": "string", "minLength": 2 },
+        "status": { "type": "string", "enum": ["sample", "client-draft", "client-final"] }
+      }
+    },
+    "vendor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "product", "plan", "homepage"],
+      "properties": {
+        "name": { "type": "string", "minLength": 2 },
+        "product": { "type": "string", "minLength": 2 },
+        "plan": { "type": "string", "minLength": 2 },
+        "homepage": { "type": "string", "format": "uri" },
+        "privacy_url": { "type": "string", "format": "uri" },
+        "security_url": { "type": "string", "format": "uri" },
+        "terms_url": { "type": "string", "format": "uri" }
+      }
+    },
+    "adoption_scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["company_profile", "intended_use", "users", "deployment_context", "decision_impact", "non_goals"],
+      "properties": {
+        "company_profile": { "type": "string", "minLength": 10 },
+        "intended_use": { "type": "string", "minLength": 10 },
+        "users": { "type": "string", "minLength": 3 },
+        "deployment_context": { "type": "string", "minLength": 10 },
+        "decision_impact": { "type": "string", "minLength": 5 },
+        "non_goals": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "executive_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verdict", "risk_level", "summary", "key_risks", "key_controls", "caveats"],
+      "properties": {
+        "verdict": { "type": "string", "enum": ["Go", "Go with controls", "Pause"] },
+        "risk_level": { "type": "string", "enum": ["Low", "Medium", "High"] },
+        "summary": { "type": "string", "minLength": 30 },
+        "key_risks": { "$ref": "#/$defs/stringList" },
+        "key_controls": { "$ref": "#/$defs/stringList" },
+        "caveats": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "data_exposure_map": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/dataExposure" }
+    },
+    "ai_act_role_hypothesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["likely_role", "risk_classification", "rationale", "caveats", "review_triggers"],
+      "properties": {
+        "likely_role": { "type": "string", "minLength": 5 },
+        "risk_classification": { "type": "string", "minLength": 5 },
+        "rationale": { "type": "string", "minLength": 20 },
+        "caveats": { "$ref": "#/$defs/stringList" },
+        "review_triggers": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "security_privacy_questions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/reviewQuestion" }
+    },
+    "lock_in_risks": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/lockInRisk" }
+    },
+    "human_oversight_checklist": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/oversightControl" }
+    },
+    "recommended_controls": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/recommendedControl" }
+    },
+    "final_recommendation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcome", "rationale", "conditions", "pause_triggers", "next_review"],
+      "properties": {
+        "outcome": { "type": "string", "enum": ["Go", "Go with controls", "Pause"] },
+        "rationale": { "type": "string", "minLength": 20 },
+        "conditions": { "$ref": "#/$defs/stringList" },
+        "pause_triggers": { "$ref": "#/$defs/stringList" },
+        "next_review": { "type": "string", "minLength": 5 }
+      }
+    },
+    "evidence_sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/evidenceSource" }
+    }
+  },
+  "$defs": {
+    "stringList": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 3 }
+    },
+    "dataExposure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "examples", "source_systems", "exposure_path", "sensitivity", "retention_or_processing_note", "control_notes"],
+      "properties": {
+        "category": { "type": "string", "minLength": 3 },
+        "examples": { "$ref": "#/$defs/stringList" },
+        "source_systems": { "$ref": "#/$defs/stringList" },
+        "exposure_path": { "type": "string", "minLength": 10 },
+        "sensitivity": { "type": "string", "enum": ["Low", "Medium", "High"] },
+        "retention_or_processing_note": { "type": "string", "minLength": 10 },
+        "control_notes": { "type": "string", "minLength": 10 }
+      }
+    },
+    "reviewQuestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "question", "why_it_matters", "evidence_needed"],
+      "properties": {
+        "category": { "type": "string", "minLength": 3 },
+        "question": { "type": "string", "minLength": 10 },
+        "why_it_matters": { "type": "string", "minLength": 10 },
+        "evidence_needed": { "type": "string", "minLength": 3 }
+      }
+    },
+    "lockInRisk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["risk", "scenario", "impact", "mitigation"],
+      "properties": {
+        "risk": { "type": "string", "minLength": 3 },
+        "scenario": { "type": "string", "minLength": 10 },
+        "impact": { "type": "string", "minLength": 10 },
+        "mitigation": { "type": "string", "minLength": 10 }
+      }
+    },
+    "oversightControl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["control", "owner", "status", "evidence"],
+      "properties": {
+        "control": { "type": "string", "minLength": 5 },
+        "owner": { "type": "string", "minLength": 2 },
+        "status": { "type": "string", "enum": ["Required", "Recommended", "Conditional"] },
+        "evidence": { "type": "string", "minLength": 5 }
+      }
+    },
+    "recommendedControl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["priority", "control", "rationale", "owner", "timing"],
+      "properties": {
+        "priority": { "type": "string", "enum": ["P0", "P1", "P2"] },
+        "control": { "type": "string", "minLength": 5 },
+        "rationale": { "type": "string", "minLength": 10 },
+        "owner": { "type": "string", "minLength": 2 },
+        "timing": { "type": "string", "minLength": 3 }
+      }
+    },
+    "evidenceSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "url", "publisher", "retrieved", "notes"],
+      "properties": {
+        "title": { "type": "string", "minLength": 3 },
+        "url": { "type": "string", "format": "uri" },
+        "publisher": { "type": "string", "minLength": 2 },
+        "retrieved": { "type": "string", "format": "date" },
+        "notes": { "type": "string", "minLength": 5 }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "ai-vendor-risk-review-kit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Procurement-grade technical risk reviews for companies adopting AI tools.",
+  "scripts": {
+    "lint": "node --check scripts/generate-report.mjs && node --check scripts/validate-samples.mjs && node --check test/generator.test.mjs",
+    "validate": "node scripts/validate-samples.mjs",
+    "generate": "node scripts/generate-report.mjs --all",
+    "test": "node --test",
+    "check": "npm run lint && npm run validate && npm test && npm run generate"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {}
+}
