@@ -5,11 +5,12 @@
   "type": "module",
   "description": "Procurement-grade technical risk reviews for companies adopting AI tools.",
   "scripts": {
-    "lint": "node --check scripts/generate-report.mjs && node --check scripts/validate-samples.mjs && node --check test/generator.test.mjs",
+    "lint": "node --check lib/load-review.mjs && node --check lib/render-sections.mjs && node --check scripts/generate-report.mjs && node --check scripts/validate-samples.mjs && node --check test/generator.test.mjs",
     "validate": "node scripts/validate-samples.mjs",
     "generate": "node scripts/generate-report.mjs --all",
+    "check:reports": "npm run generate && git diff --exit-code reports/",
     "test": "node --test",
-    "check": "npm run lint && npm run validate && npm test && npm run generate"
+    "check": "npm run lint && npm run validate && npm test && npm run check:reports"
   },
   "dependencies": {
     "ajv": "^8.17.1",

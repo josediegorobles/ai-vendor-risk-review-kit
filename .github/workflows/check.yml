@@ -30,8 +30,5 @@ jobs:
       - name: Test generator
         run: npm test
 
-      - name: Generate reports
-        run: npm run generate
-
-      - name: Ensure generated reports are committed
-        run: git diff --exit-code reports
+      - name: Ensure generated reports match samples
+        run: npm run check:reports

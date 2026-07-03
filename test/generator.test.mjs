@@ -4,11 +4,17 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { generateOne, loadReview, renderMarkdown } from "../scripts/generate-report.mjs";
+import { loadReview } from "../lib/load-review.mjs";
+import { renderMarkdown } from "../lib/render-sections.mjs";
 
 const testDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(testDir, "..");
 const chatgptSample = path.join(repoRoot, "samples/chatgpt-team/vendor-review.yaml");
+const goldenReports = [
+  "chatgpt-team",
+  "microsoft-365-copilot",
+  "notion-ai",
+];
 
 test("loads and renders a valid sample review", () => {
   const review = loadReview(chatgptSample);
@@ -18,12 +24,13 @@ test("loads and renders a valid sample review", () => {
   assert.match(markdown, /## Evidence Appendix/);
 });
 
-test("generates a report file in a selected output directory", () => {
-  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "vendor-review-report-"));
-  const output = generateOne(chatgptSample, outDir);
-  assert.equal(path.basename(output), "chatgpt-team.md");
-  assert.match(fs.readFileSync(output, "utf8"), /ChatGPT/);
-});
+for (const slug of goldenReports) {
+  test(`renders ${slug} exactly like the golden fixture`, () => {
+    const sample = path.join(repoRoot, `samples/${slug}/vendor-review.yaml`);
+    const fixture = path.join(repoRoot, `test/fixtures/reports/${slug}.md`);
+    assert.equal(renderMarkdown(loadReview(sample)), fs.readFileSync(fixture, "utf8"));
+  });
+}
 
 test("fails clearly when required fields are missing", () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "vendor-review-invalid-"));
