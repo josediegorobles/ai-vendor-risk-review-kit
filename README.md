@@ -90,3 +90,7 @@ test/        Minimal generator tests
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+---
+
+Servicio relacionado: https://josedrobles.com/es/ia-privada/
